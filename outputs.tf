@@ -7,5 +7,6 @@ output "cluster_endpoint" {
 }
 
 output "cluster_kubeconfig" {
-  value = module.eks.kubeconfig_filename
+  value       = module.eks.kubeconfig
+  description = "Conteúdo do kubeconfig para acessar o cluster"
 }
