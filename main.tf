@@ -1,3 +1,4 @@
+# VPC básica
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -18,6 +19,7 @@ module "vpc" {
   }
 }
 
+# Cluster EKS
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
