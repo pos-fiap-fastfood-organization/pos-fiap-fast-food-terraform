@@ -30,10 +30,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      desired_size = var.desired_capacity
-      max_size     = 3
-      min_size     = 1
-
+      desired_size   = var.desired_capacity
+      max_size       = 3
+      min_size       = 1
       instance_types = [var.instance_type]
       disk_size      = 20
     }

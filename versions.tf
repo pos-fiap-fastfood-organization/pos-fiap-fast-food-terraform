@@ -6,11 +6,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-  }
-
-  backend "s3" {
-    bucket = "fiap-fastfood-terraform-state"
-    key    = "eks/terraform.tfstate"
-    region = "us-east-2"
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.20"
+    }
   }
 }

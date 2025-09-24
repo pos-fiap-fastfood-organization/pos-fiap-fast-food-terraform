@@ -6,7 +6,6 @@ output "cluster_endpoint" {
   value = module.eks.cluster_endpoint
 }
 
-output "cluster_kubeconfig" {
-  value       = module.eks.kubeconfig
-  description = "Conteúdo do kubeconfig para acessar o cluster"
+output "cluster_certificate_authority" {
+  value = module.eks.cluster_certificate_authority[0].data
 }

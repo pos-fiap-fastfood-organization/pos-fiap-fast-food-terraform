@@ -5,19 +5,19 @@ variable "aws_region" {
 }
 
 variable "cluster_name" {
-  description = "EKS Cluster Name"
+  description = "Nome do cluster EKS"
   type        = string
   default     = "fiap-fastfood-eks"
 }
 
 variable "desired_capacity" {
-  description = "Number of worker nodes"
+  description = "Quantidade de nós no Node Group"
   type        = number
   default     = 2
 }
 
 variable "instance_type" {
-  description = "EC2 instance type for worker nodes"
+  description = "Tipo de instância EC2 para os nodes"
   type        = string
   default     = "t3.medium"
 }
