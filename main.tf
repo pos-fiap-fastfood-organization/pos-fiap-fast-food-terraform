@@ -1,4 +1,3 @@
-# VPC básica com subnets públicas e privadas
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -19,7 +18,6 @@ module "vpc" {
   }
 }
 
-# EKS Cluster
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
