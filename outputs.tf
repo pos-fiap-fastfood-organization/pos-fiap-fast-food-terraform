@@ -21,3 +21,7 @@ output "vpc_id" {
 output "vpc_cidr_block" {
   value = module.vpc.vpc_cidr_block
 }
+
+output "cluster_ca" {
+  value = module.eks.cluster_certificate_authority
+}
