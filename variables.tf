@@ -19,5 +19,5 @@ variable "desired_capacity" {
 variable "instance_type" {
   description = "Tipo de instância EC2 para os nodes"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.micro"
 }
