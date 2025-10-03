@@ -21,3 +21,15 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "cluster_endpoint_public_access" {
+  description = "Habilita endpoint público do EKS"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_allowed_cidrs" {
+  description = "Lista de CIDRs que podem acessar o endpoint público"
+  type        = list(string)
+  default     = ["170.79.239.228/32"] 
+}
