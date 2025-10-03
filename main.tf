@@ -44,4 +44,8 @@ module "eks" {
     Terraform   = "true"
     Environment = "dev"
   }
+
+  cluster_endpoint_public_access        = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access       = true
+  cluster_endpoint_public_access_cidrs  = var.cluster_allowed_cidrs
 }
