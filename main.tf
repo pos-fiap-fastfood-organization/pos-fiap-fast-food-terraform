@@ -49,3 +49,27 @@ module "eks" {
   cluster_endpoint_private_access       = true
   cluster_endpoint_public_access_cidrs  = var.cluster_allowed_cidrs
 }
+
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = yamlencode([
+      {
+        rolearn  = module.eks.node_groups["default"].iam_role_arn
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:bootstrappers", "system:nodes"]
+      }
+    ])
+    mapUsers = yamlencode([
+      {
+        userarn  = "arn:aws:iam::608713827096:user/fiap-pos-fast-food-github-terraform"
+        username = "fiap-pos-fast-food-github-terraform"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
+}
