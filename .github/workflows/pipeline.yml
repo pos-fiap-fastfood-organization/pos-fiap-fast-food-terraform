@@ -5,6 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
+  pull_request:
 
 jobs:
   terraform:
@@ -14,7 +15,6 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_TERRAFORM }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_TERRAFORM }}
-      TF_VAR_kubernetes_user: ${{ secrets.AWS_KUBERNETES_USER_ACESS }}
 
     steps:
       - name: Checkout repository
@@ -38,3 +38,7 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
+        
+      - name: Terraform Outputs
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform output
