@@ -33,9 +33,3 @@ variable "cluster_allowed_cidrs" {
   type        = list(string)
   default     = ["0.0.0.0/0"] 
 }
-
-
-variable "kubernetes_user" {
-  description = "Usuario que tera acesso ao cluster"
-  type        = string
-}
