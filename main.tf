@@ -1,4 +1,4 @@
-# VPC básica
+# VPC
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -19,7 +19,7 @@ module "vpc" {
   }
 }
 
-# Cluster EKS
+# Cluster EKS principal
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
@@ -40,37 +40,65 @@ module "eks" {
     }
   }
 
+  cluster_endpoint_public_access        = var.cluster_endpoint_public_access
+  cluster_endpoint_private_access       = true
+  cluster_endpoint_public_access_cidrs  = var.cluster_allowed_cidrs
+
   tags = {
     Terraform   = "true"
     Environment = "dev"
   }
-
-  cluster_endpoint_public_access        = var.cluster_endpoint_public_access
-  cluster_endpoint_private_access       = true
-  cluster_endpoint_public_access_cidrs  = var.cluster_allowed_cidrs
 }
 
-resource "kubernetes_config_map" "aws_auth" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
+# IAM Role administrativa
+data "aws_caller_identity" "current" {}
 
-  data = {
-    mapRoles = yamlencode([
-      {
-        rolearn  = module.eks.eks_managed_node_groups["default"].iam_role_arn
-        username = "system:node:{{EC2PrivateDNSName}}"
-        groups   = ["system:bootstrappers", "system:nodes"]
-      }
-    ])
+resource "aws_iam_role" "eks_admin_access" {
+  name = "EKSAdminAccess"
 
-    mapUsers = yamlencode([
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
       {
-        userarn  = "arn:aws:iam::608713827096:user/fiap-pos-fast-food-github-terraform"
-        username = "fiap-pos-fast-food-github-terraform"
-        groups   = ["system:masters"]
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action = "sts:AssumeRole"
       }
-    ])
-  }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_admin_policy" {
+  role       = aws_iam_role.eks_admin_access.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+# 👇 Submódulo para controle do aws-auth
+module "aws_auth" {
+  source = "terraform-aws-modules/eks/aws//modules/aws-auth"
+
+  manage_aws_auth_configmap = true
+
+  depends_on = [module.eks]
+
+  aws_auth_roles = [
+    {
+      rolearn  = aws_iam_role.eks_admin_access.arn
+      username = "eks-admin-access"
+      groups   = ["system:masters"]
+    }
+  ]
+
+  aws_auth_users = [
+    {
+      userarn  = var.kubernetes_user
+      username = "fiap-pos-fast-food-github-terraform"
+      groups   = ["system:masters"]
+    }
+  ]
+
+  # conecta ao cluster criado
+  eks_cluster_id = module.eks.cluster_name
 }
