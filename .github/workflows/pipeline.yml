@@ -26,12 +26,8 @@ jobs:
         with:
           terraform_version: 1.7.5
 
-      - name: Clean Terraform cache
-        run: |
-          rm -rf .terraform .terraform.lock.hcl
-
       - name: Terraform Init
-        run: terraform init -upgrade
+        run: terraform init
 
       - name: Terraform Validate
         run: terraform validate
@@ -46,5 +42,4 @@ jobs:
         
       - name: Terraform Outputs
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: terraform
         run: terraform output
