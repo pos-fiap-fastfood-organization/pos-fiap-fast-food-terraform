@@ -77,7 +77,7 @@ resource "aws_iam_role_policy_attachment" "eks_admin_policy" {
 
 # 👇 Submódulo para controle do aws-auth
 module "aws_auth" {
-  source = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  source = "github.com/terraform-aws-modules/terraform-aws-eks//modules/aws-auth?ref=v20.8.5"
 
   manage_aws_auth_configmap = true
 
